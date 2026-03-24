@@ -1,1 +1,7 @@
 streamlit
+ephem
+astropy
+numpy
+matplotlib
+pandas
+astroquery
