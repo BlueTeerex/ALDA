@@ -43,22 +43,21 @@ PAPER_ASTEROIDS = {
 # --- 3. 三語專業字典 ---
 LANG_MAP = {
     "繁體中文": "zh_TW",
-    "簡體中文": "zh_CN",
+    "简体中文": "zh_CN",
     "English": "en"
 }
 
 LANG_DICT = {
     "zh_TW": {
-        "title": "ALDA: 小行星光變數據擴增系統",
-        "about_tab": "開發背景",
-        "calc_tab": "觀測視窗預測",
-        "val_tab": "模型準確性驗證",
+        "nav_background": "開發背景",
+        "nav_predict": "觀測視窗預測",
+        "nav_val": "模型準確性驗證",
         "why_title": "研究背景與目的",
-        "why_text": "小行星形狀重構與物理性質研究高度依賴光變曲線數據。然而，多數小行星在特定幾何相位區間缺乏連續觀測記錄。本系統旨在精確預測觀測視窗，協助科研人員填補數據缺口。",
+        "why_text": "小行星形狀重構與物理性質研究高度依賴光變曲線數據。多數小行星在特定幾何相位區間缺乏連續觀測記錄。本系統旨在精確預測觀測視窗，協助科研人員填補數據缺口。",
         "func_title": "核心功能",
         "func_text": "1. 軌道動力學計算：精確導出相位角 (α) 與距角 (θ)。\n2. 視窗篩選：自動過濾符合 α < 30° 且 θ > 90° 之視窗。\n3. 科研協作：支持多目標追蹤，為國際合作觀測提供導航數據。",
         "how_title": "操作說明",
-        "how_text": "請於側邊欄設定目標天體、起始年份及預測週期，點擊「執行分析」獲取高精度視窗清單。",
+        "how_text": "請在預測分頁中設定目標天體、起始年份及預測週期，點擊「執行分析」獲取高精度視窗清單。",
         "val_title": "預測誤差分析",
         "val_col_param": "評估參數",
         "val_col_error": "平均誤差",
@@ -72,21 +71,20 @@ LANG_DICT = {
         "years": "預測跨度 (年)",
         "run_btn": "執行高精度分析",
         "result_title": "建議觀測時間表",
-        "chart_title": "幾何幾何參數演化趨勢 (α & θ)",
+        "chart_title": "幾何參數演化趨勢 (α & θ)",
         "school": "製作單位：澳門濠江中學附屬英才學校 學生團隊",
         "copy": "Copyright © 2026 ALDA Project. All Rights Reserved."
     },
     "zh_CN": {
-        "title": "ALDA: 小行星光变数据扩增系统",
-        "about_tab": "开发背景",
-        "calc_tab": "观测视窗预测",
-        "val_tab": "模型准确性验证",
+        "nav_background": "开发背景",
+        "nav_predict": "观测视窗预测",
+        "nav_val": "模型准确性验证",
         "why_title": "研究背景与目的",
-        "why_text": "小行星形状重构与物理性质研究高度依赖光变曲线数据。然而，多数小行星在特定几何相位区间缺乏连续观测记录。本系统旨在精确预测观测视窗，协助科研人员填补数据缺口。",
+        "why_text": "小行星形状重构与物理性质研究高度依赖光变曲线数据。多数小行星在特定几何相位区间缺乏连续观测记录。本系统旨在精确预测观测视窗，协助科研人员填补数据缺口。",
         "func_title": "核心功能",
         "func_text": "1. 轨道动力学计算：精确导出相位角 (α) 与距角 (θ)。\n2. 视窗筛选：自动过滤符合 α < 30° 且 θ > 90° 之视窗。\n3. 科研协作：支持多目标追踪，为国际合作观测提供导航数据。",
         "how_title": "操作说明",
-        "how_text": "请在侧边栏设定目标天体、起始年份及预测周期，点击“执行分析”获取高精度视窗清单。",
+        "how_text": "请在预测分页中设定目标天体、起始年份及预测周期，点击“执行分析”获取高精度视窗清单。",
         "val_title": "预测误差分析",
         "val_col_param": "评估参数",
         "val_col_error": "平均误差",
@@ -100,21 +98,20 @@ LANG_DICT = {
         "years": "预测跨度 (年)",
         "run_btn": "执行高精度分析",
         "result_title": "建议观测时间表",
-        "chart_title": "几何几何参数演化趋势 (α & θ)",
+        "chart_title": "几何参数演化趋势 (α & θ)",
         "school": "制作单位：澳门濠江中学附属英才学校 团队",
         "copy": "Copyright © 2026 ALDA Project. All Rights Reserved."
     },
     "en": {
-        "title": "ALDA: Asteroid Lightcurve Data Augmentor",
-        "about_tab": "Background",
-        "calc_tab": "Window Prediction",
-        "val_tab": "Validation",
+        "nav_background": "Background",
+        "nav_predict": "Window Prediction",
+        "nav_val": "Validation",
         "why_title": "Research Background",
         "why_text": "Asteroid physical modeling relies heavily on lightcurve data. ALDA predicts optimal observation windows to fill scientific gaps at critical geometric phases.",
         "func_title": "Core Functions",
         "func_text": "1. Orbital Dynamics: Calculation of Phase (α) and Elongation (θ).\n2. Window Filtering: Automated selection based on scientific constraints.\n3. Research Collaboration: Multi-target support for global observation missions.",
         "how_title": "Instructions",
-        "how_text": "Select the target and timeframe in the sidebar, then execute the analysis to generate data.",
+        "how_text": "Configure the target and timeframe in the prediction tab, then execute the analysis.",
         "val_title": "Error Analysis",
         "val_col_param": "Parameter",
         "val_col_error": "Mean Error",
@@ -134,27 +131,26 @@ LANG_DICT = {
     }
 }
 
-# --- 4. 網頁 UI 佈局 ---
-st.set_page_config(page_title="ALDA Professional", layout="wide")
+# --- 4. 網頁渲染架構 ---
+st.set_page_config(page_title="ALDA Scientific Platform", layout="wide")
 
-# 側邊欄語言與參數設定
+# 側邊導航欄
 with st.sidebar:
-    st.header("Language / 語言")
-    selected_lang_name = st.selectbox("Interface Language", list(LANG_MAP.keys()))
+    st.title("ALDA Project")
+    selected_lang_name = st.selectbox("Language / 語言", list(LANG_MAP.keys()))
     lang_key = LANG_MAP[selected_lang_name]
     l = LANG_DICT[lang_key]
     
     st.divider()
-    st.header(l["settings"])
-    target_id = st.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
-    s_year = st.number_input(l["start_year"], value=2025)
-    span = st.slider(l["years"], 1, 25, 15)
+    # 將分頁放在左側導航
+    page = st.radio(
+        "Navigation",
+        [l["nav_background"], l["nav_predict"], l["nav_val"]]
+    )
 
-# 主頁面
-st.title(l["title"])
-tab_about, tab_calc, tab_val = st.tabs([l["about_tab"], l["calc_tab"], l["val_tab"]])
-
-with tab_about:
+# 頁面內容邏輯
+if page == l["nav_background"]:
+    st.title(l["nav_background"])
     st.subheader(l["why_title"])
     st.write(l["why_text"])
     col1, col2 = st.columns(2)
@@ -166,9 +162,9 @@ with tab_about:
         st.write(l["how_text"])
     st.info(f"Institution: {l['school']}")
 
-with tab_val:
+elif page == l["nav_val"]:
+    st.title(l["nav_val"])
     st.subheader(l["val_title"])
-    # 這裡實現表格內容完全漢化
     val_df = pd.DataFrame({
         l["val_col_param"]: [l["val_row_phase"], l["val_row_window"], l["val_row_data"]],
         l["val_col_error"]: ["± 0.42°", "± 2.5 Days", "Validated"],
@@ -176,8 +172,18 @@ with tab_val:
     })
     st.table(val_df)
 
-with tab_calc:
-    if st.button(l["run_btn"], use_container_width=True):
+elif page == l["nav_predict"]:
+    st.title(l["nav_predict"])
+    
+    # 觀測參數設定直接整合在此分頁上方
+    with st.expander(l["settings"], expanded=True):
+        c1, c2, c3 = st.columns([2, 1, 1])
+        target_id = c1.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
+        s_year = c2.number_input(l["start_year"], value=2025)
+        span = c3.slider(l["years"], 1, 25, 15)
+        btn_run = st.button(l["run_btn"], use_container_width=True)
+
+    if btn_run:
         engine = ALDAEngine(PAPER_ASTEROIDS[target_id])
         jd_start = Time(f"{s_year}-01-01").jd
         jd_array = np.arange(jd_start, jd_start + (span * 365), 2)
@@ -189,23 +195,28 @@ with tab_calc:
         if not valid.empty:
             st.subheader(l["result_title"])
             valid['group'] = (valid['Date'].diff().dt.days > 10).cumsum()
-            for _, gp in valid.groupby('group'):
-                st.success(f"**{gp['Date'].iloc[0].strftime('%Y-%m-%d')} — {gp['Date'].iloc[-1].strftime('%Y-%m-%d')}**")
+            
+            # 使用容器排版結果
+            cols = st.columns(2)
+            for idx, (_, gp) in enumerate(valid.groupby('group')):
+                with cols[idx % 2]:
+                    st.success(f"**{gp['Date'].iloc[0].strftime('%Y-%m-%d')} — {gp['Date'].iloc[-1].strftime('%Y-%m-%d')}**")
             
             st.divider()
             st.subheader(l["chart_title"])
             fig, ax = plt.subplots(figsize=(10, 4))
             ax.plot(df['Date'], df['Phase'], label="α (Phase)", color='#ff7f0e', linewidth=1.5)
             ax.plot(df['Date'], df['Elongation'], label="θ (Elongation)", color='#1f77b4', linewidth=1.5)
-            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), color='green', alpha=0.15, label="Window")
+            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), color='green', alpha=0.1, label="Window")
             ax.set_ylim(0, 180)
             ax.set_ylabel("Degrees")
             ax.legend(loc='upper right', frameon=True)
             ax.grid(True, linestyle=':', alpha=0.6)
             st.pyplot(fig)
         else:
-            st.warning("No results found for the selected timeframe.")
+            st.warning("No windows found within the specified constraints.")
 
+# 頁腳
 st.divider()
 f_l, f_r = st.columns(2)
 f_l.caption(l["school"])
