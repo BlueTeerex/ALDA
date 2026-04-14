@@ -21,17 +21,15 @@ class ALDAEngine:
         delta = ast.earth_distance
         R = sun.earth_distance 
         
-        # 相位角 (α)
         cos_alpha = (r**2 + delta**2 - R**2) / (2 * r * delta)
         phase_angle = degrees(acos(max(-1, min(1, cos_alpha))))
         
-        # 距角 (θ)
         cos_theta = (R**2 + delta**2 - r**2) / (2 * R * delta)
         elongation = degrees(acos(max(-1, min(1, cos_theta))))
         
         return {'Date': date, 'Phase': phase_angle, 'Elongation': elongation, 'JD': jd}
 
-# --- 2. 目標小行星資料庫 ---
+# --- 2. 軌道數據庫 ---
 PAPER_ASTEROIDS = {
     "162173 Ryugu": "162173 Ryugu,e,5.86663,251.29446,211.61035,1.1910091,0,0.19111632,327.3279370,5/31.0/2020,2000,H19.55,0.15",
     "101955 Bennu": "101955 Bennu,e,6.03494,2.06087,66.22307,1.1259673,0,0.20374511,101.7039655,5/31.0/2020,2000,H20.45,0.15",
@@ -40,7 +38,7 @@ PAPER_ASTEROIDS = {
     "433 Eros": "433 Eros,e,10.827,178.783,304.402,1.4582,0,0.2227,178.817,5/31.0/2020,2000,H11.16,0.15"
 }
 
-# --- 3. 三語專業字典 ---
+# --- 3. 三語專業字典 (全面檢查並修正遺漏) ---
 LANG_MAP = {
     "繁體中文": "zh_TW",
     "简体中文": "zh_CN",
@@ -49,6 +47,8 @@ LANG_MAP = {
 
 LANG_DICT = {
     "zh_TW": {
+        "nav_label": "導航選單",
+        "lang_label": "語言選擇",
         "nav_background": "開發背景",
         "nav_predict": "觀測視窗預測",
         "nav_val": "模型準確性驗證",
@@ -72,10 +72,13 @@ LANG_DICT = {
         "run_btn": "執行高精度分析",
         "result_title": "建議觀測時間表",
         "chart_title": "幾何參數演化趨勢 (α & θ)",
-        "school": "製作單位：澳門濠江中學附屬英才學校 學生團隊",
-        "copy": "Copyright © 2026 ALDA Project. All Rights Reserved."
+        "inst_label": "製作單位",
+        "school": "澳門濠江中學附設英才學校 學生團隊",
+        "copy": "版權所有 © 2026 ALDA 項目。保留所有權利。"
     },
     "zh_CN": {
+        "nav_label": "导航菜单",
+        "lang_label": "语言选择",
         "nav_background": "开发背景",
         "nav_predict": "观测视窗预测",
         "nav_val": "模型准确性验证",
@@ -99,14 +102,17 @@ LANG_DICT = {
         "run_btn": "执行高精度分析",
         "result_title": "建议观测时间表",
         "chart_title": "几何参数演化趋势 (α & θ)",
-        "school": "制作单位：澳门濠江中学附属英才学校 团队",
-        "copy": "Copyright © 2026 ALDA Project. All Rights Reserved."
+        "inst_label": "制作单位",
+        "school": "澳门濠江中学附属英才学校 学生团队",
+        "copy": "版权所有 © 2026 ALDA 项目。保留所有权利。"
     },
     "en": {
-        "nav_background": "Background",
+        "nav_label": "Navigation",
+        "lang_label": "Language",
+        "nav_background": "Project Background",
         "nav_predict": "Window Prediction",
-        "nav_val": "Validation",
-        "why_title": "Research Background",
+        "nav_val": "Model Validation",
+        "why_title": "Research Motivation",
         "why_text": "Asteroid physical modeling relies heavily on lightcurve data. ALDA predicts optimal observation windows to fill scientific gaps at critical geometric phases.",
         "func_title": "Core Functions",
         "func_text": "1. Orbital Dynamics: Calculation of Phase (α) and Elongation (θ).\n2. Window Filtering: Automated selection based on scientific constraints.\n3. Research Collaboration: Multi-target support for global observation missions.",
@@ -126,41 +132,47 @@ LANG_DICT = {
         "run_btn": "Run Analysis",
         "result_title": "Recommended Schedule",
         "chart_title": "Parameter Evolution Trends (α & θ)",
-        "school": "Produced by students of Premier School Affiliated to Hou Kong Middle School (Macau)",
+        "inst_label": "Institution",
+        "school": "Students of Premier School Affiliated to Hou Kong Middle School (Macau)",
         "copy": "Copyright © 2026 ALDA Project. All Rights Reserved."
     }
 }
 
-# --- 4. 網頁渲染架構 ---
-st.set_page_config(page_title="ALDA Scientific Platform", layout="wide")
+# --- 4. 網頁渲染 ---
+st.set_page_config(page_title="ALDA Platform", layout="wide")
 
-# 側邊導航欄
+# 側邊欄設計
 with st.sidebar:
-    st.title("ALDA Project")
-    selected_lang_name = st.selectbox("Language / 語言", list(LANG_MAP.keys()))
+    st.title("☄️ ALDA")
+    selected_lang_name = st.selectbox("Language Selection", list(LANG_MAP.keys()), label_visibility="collapsed")
     lang_key = LANG_MAP[selected_lang_name]
     l = LANG_DICT[lang_key]
     
     st.divider()
-    # 將分頁放在左側導航
-    page = st.radio(
-        "Navigation",
-        [l["nav_background"], l["nav_predict"], l["nav_val"]]
-    )
+    st.caption(l["nav_label"])
+    page = st.radio("Menu", [l["nav_background"], l["nav_predict"], l["nav_val"]], label_visibility="collapsed")
+    
+    st.spacer = st.container()
+    # 底部資訊固定在側邊欄下方
+    st.markdown("---")
+    st.caption(f"{l['inst_label']}:")
+    st.write(l["school"])
 
-# 頁面內容邏輯
+# 內容渲染邏輯
 if page == l["nav_background"]:
     st.title(l["nav_background"])
-    st.subheader(l["why_title"])
-    st.write(l["why_text"])
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f"### {l['func_title']}")
-        st.write(l["func_text"])
-    with col2:
-        st.markdown(f"### {l['how_title']}")
-        st.write(l["how_text"])
-    st.info(f"Institution: {l['school']}")
+    with st.container():
+        st.subheader(l["why_title"])
+        st.write(l["why_text"])
+    
+    st.divider()
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown(f"#### {l['func_title']}")
+        st.info(l["func_text"])
+    with c2:
+        st.markdown(f"#### {l['how_title']}")
+        st.info(l["how_text"])
 
 elif page == l["nav_val"]:
     st.title(l["nav_val"])
@@ -175,13 +187,13 @@ elif page == l["nav_val"]:
 elif page == l["nav_predict"]:
     st.title(l["nav_predict"])
     
-    # 觀測參數設定直接整合在此分頁上方
+    # 參數設定卡片
     with st.expander(l["settings"], expanded=True):
-        c1, c2, c3 = st.columns([2, 1, 1])
-        target_id = c1.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
-        s_year = c2.number_input(l["start_year"], value=2025)
-        span = c3.slider(l["years"], 1, 25, 15)
-        btn_run = st.button(l["run_btn"], use_container_width=True)
+        col_t, col_y, col_s = st.columns([2, 1, 1])
+        target_id = col_t.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
+        s_year = col_y.number_input(l["start_year"], value=2025)
+        span = col_s.slider(l["years"], 1, 25, 15)
+        btn_run = st.button(l["run_btn"], use_container_width=True, type="primary")
 
     if btn_run:
         engine = ALDAEngine(PAPER_ASTEROIDS[target_id])
@@ -196,28 +208,25 @@ elif page == l["nav_predict"]:
             st.subheader(l["result_title"])
             valid['group'] = (valid['Date'].diff().dt.days > 10).cumsum()
             
-            # 使用容器排版結果
-            cols = st.columns(2)
+            res_cols = st.columns(3) # 改為三列，更簡潔
             for idx, (_, gp) in enumerate(valid.groupby('group')):
-                with cols[idx % 2]:
-                    st.success(f"**{gp['Date'].iloc[0].strftime('%Y-%m-%d')} — {gp['Date'].iloc[-1].strftime('%Y-%m-%d')}**")
+                with res_cols[idx % 3]:
+                    st.success(f"{gp['Date'].iloc[0].strftime('%Y-%m-%d')} → {gp['Date'].iloc[-1].strftime('%Y-%m-%d')}")
             
             st.divider()
             st.subheader(l["chart_title"])
-            fig, ax = plt.subplots(figsize=(10, 4))
-            ax.plot(df['Date'], df['Phase'], label="α (Phase)", color='#ff7f0e', linewidth=1.5)
-            ax.plot(df['Date'], df['Elongation'], label="θ (Elongation)", color='#1f77b4', linewidth=1.5)
-            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), color='green', alpha=0.1, label="Window")
+            fig, ax = plt.subplots(figsize=(12, 4.5))
+            ax.plot(df['Date'], df['Phase'], label="Phase (α)", color='#E67E22', linewidth=1.5)
+            ax.plot(df['Date'], df['Elongation'], label="Elongation (θ)", color='#2E86C1', linewidth=1.5)
+            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), color='#2ECC71', alpha=0.15, label="Optimal Window")
             ax.set_ylim(0, 180)
             ax.set_ylabel("Degrees")
             ax.legend(loc='upper right', frameon=True)
-            ax.grid(True, linestyle=':', alpha=0.6)
+            ax.grid(True, linestyle='--', alpha=0.5)
             st.pyplot(fig)
         else:
-            st.warning("No windows found within the specified constraints.")
+            st.warning("No data matches current scientific constraints.")
 
 # 頁腳
-st.divider()
-f_l, f_r = st.columns(2)
-f_l.caption(l["school"])
-f_r.markdown(f"<div style='text-align: right; color: gray; font-size: 0.8em;'>{l['copy']}</div>", unsafe_allow_html=True)
+st.markdown("---")
+st.markdown(f"<div style='text-align: center; color: gray; font-size: 0.8em;'>{l['copy']}</div>", unsafe_allow_html=True)
