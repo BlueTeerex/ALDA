@@ -32,7 +32,7 @@ PAPER_ASTEROIDS = {
     "433 Eros": "433 Eros,e,10.827,178.783,304.402,1.4582,0,0.2227,178.817,5/31.0/2020,2000,H11.16,0.15"
 }
 
-# --- 3. 三語專業字典 (標題漢化) ---
+# --- 3. 三語專業字典 (全面統一化) ---
 LANG_MAP = {"繁體中文": "zh_TW", "简体中文": "zh_CN", "English": "en"}
 LANG_DICT = {
     "zh_TW": {
@@ -45,10 +45,13 @@ LANG_DICT = {
         "why_text": "小行星形狀重構與物理性質研究高度依賴光變曲線數據。多數小行星在特定幾何相位區間缺乏連續觀測記錄。本系統旨在精確預測觀測視窗，協助科研人員填補數據缺口。",
         "val_title": "預測誤差分析",
         "val_col_param": "評估參數", "val_col_error": "平均誤差", "val_col_source": "數據驗證來源",
+        "val_row_phase": "相位角 (α)", "val_row_window": "觀測視窗日期", "val_row_data": "驗證資料庫",
         "settings": "觀測參數設定", "target": "選取目標小行星", "start_year": "預測起始年份",
         "years": "預測跨度 (年)", "run_btn": "執行高精度分析", "result_title": "建議觀測時間表",
         "chart_title": "幾何參數演化趨勢 (α & θ)", "inst_label": "製作單位",
-        "school": "澳門濠江中學附設英才學校 學生團隊", "copy": "版權所有 © 2026 ALDA 項目。保留所有權利。"
+        "school": "澳門濠江中學附設英才學校 學生團隊", "copy": "版權所有 © 2026 ALDA 項目。保留所有權利。",
+        "date_to": "至", "metric_target": "目標天體", "metric_windows": "發現視窗數", "metric_span": "分析跨度",
+        "legend_phase": "相位角 (α)", "legend_elong": "距角 (θ)", "legend_opt": "最佳視窗"
     },
     "zh_CN": {
         "full_name": "小行星光变数据扩增系统",
@@ -60,10 +63,13 @@ LANG_DICT = {
         "why_text": "小行星形状重构与物理性质研究高度依赖光变曲线数据。多数小行星在特定几何相位区间缺乏连续观测记录。本系统旨在精确预测观测视窗，协助科研人员填补数据缺口。",
         "val_title": "预测误差分析",
         "val_col_param": "评估参数", "val_col_error": "平均误差", "val_col_source": "数据验证来源",
+        "val_row_phase": "相位角 (α)", "val_row_window": "观测视窗日期", "val_row_data": "验证数据库",
         "settings": "观测参数设定", "target": "选取目标小行星", "start_year": "预测起始年份",
         "years": "预测跨度 (年)", "run_btn": "执行高精度分析", "result_title": "建议观测时间表",
         "chart_title": "几何参数演化趋势 (α & θ)", "inst_label": "制作单位",
-        "school": "澳门濠江中学附属英才学校 学生团队", "copy": "版权所有 © 2026 ALDA 项目。保留所有权利。"
+        "school": "澳门濠江中学附属英才学校 学生团队", "copy": "版权所有 © 2026 ALDA 项目。保留所有权利。",
+        "date_to": "至", "metric_target": "目标天体", "metric_windows": "发现视窗数", "metric_span": "分析跨度",
+        "legend_phase": "相位角 (α)", "legend_elong": "距角 (θ)", "legend_opt": "最佳视窗"
     },
     "en": {
         "full_name": "Asteroid Lightcurve Data Augmentor",
@@ -75,31 +81,32 @@ LANG_DICT = {
         "why_text": "Asteroid physical modeling relies heavily on lightcurve data. ALDA predicts optimal observation windows to fill scientific gaps at critical geometric phases.",
         "val_title": "Error Analysis",
         "val_col_param": "Parameter", "val_col_error": "Mean Error", "val_col_source": "Source",
+        "val_row_phase": "Phase Angle (α)", "val_row_window": "Window Accuracy", "val_row_data": "Reference DB",
         "settings": "Observation Settings", "target": "Select Target", "start_year": "Start Year",
         "years": "Duration (Years)", "run_btn": "Run Analysis", "result_title": "Recommended Schedule",
         "chart_title": "Parameter Evolution Trends (α & θ)", "inst_label": "Institution",
-        "school": "Students of Premier School Affiliated to Hou Kong Middle School (Macau)", "copy": "Copyright © 2026 ALDA Project. All Rights Reserved."
+        "school": "Students of Premier School Affiliated to Hou Kong Middle School (Macau)", "copy": "Copyright © 2026 ALDA Project. All Rights Reserved.",
+        "date_to": "to", "metric_target": "Target", "metric_windows": "Windows Found", "metric_span": "Span",
+        "legend_phase": "Phase Angle (α)", "legend_elong": "Elongation (θ)", "legend_opt": "Optimal Window"
     }
 }
 
-# --- 4. 網頁 UI 設定與 CSS 優化 ---
+# --- 4. 網頁 UI 設定與 CSS ---
 st.set_page_config(page_title="ALDA Scientific", layout="wide")
 
 st.markdown("""
     <style>
     .main { background-color: #f8f9fa; }
-    .stButton>button { width: 100%; border-radius: 8px; height: 3em; background-color: #1f77b4; color: white; border: none; }
-    .stButton>button:hover { background-color: #1a5f8a; color: white; border: none; }
-    .reportview-container .main .block-container { padding-top: 2rem; }
-    div[data-testid="stExpander"] { border: 1px solid #e6e6e6; border-radius: 12px; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .stMetric { background-color: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .stButton>button { width: 100%; border-radius: 8px; background-color: #1f77b4; color: white; border: none; font-weight: bold; }
+    div[data-testid="stExpander"] { border: 1px solid #e6e6e6; border-radius: 12px; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .stMetric { background-color: white; padding: 15px; border-radius: 10px; border: 1px solid #eee; }
     </style>
     """, unsafe_allow_html=True)
 
-# 側邊欄佈局
+# 側邊欄
 with st.sidebar:
     st.markdown("<h1 style='text-align: center;'>☄️ ALDA</h1>", unsafe_allow_html=True)
-    selected_lang_name = st.selectbox("Language", list(LANG_MAP.keys()), label_visibility="collapsed")
+    selected_lang_name = st.selectbox("Language Selection", list(LANG_MAP.keys()), label_visibility="collapsed")
     lang_key = LANG_MAP[selected_lang_name]
     l = LANG_DICT[lang_key]
     
@@ -110,13 +117,13 @@ with st.sidebar:
     st.caption(f"{l['inst_label']}:")
     st.write(f"**{l['school']}**")
 
-# --- 5. 頁面內容 ---
+# 主標題渲染
 st.title("ALDA")
-st.markdown(f"<h3 style='color: #555;'>{l['full_name']}</h3>", unsafe_allow_html=True)
+st.markdown(f"<h3 style='color: #444; margin-top: -15px;'>{l['full_name']}</h3>", unsafe_allow_html=True)
 st.divider()
 
+# --- 5. 分頁邏輯 ---
 if page == l["nav_predict"]:
-    # 參數設定卡片
     with st.container():
         st.subheader(l["settings"])
         col_t, col_y, col_s = st.columns([2, 1, 1])
@@ -133,11 +140,11 @@ if page == l["nav_predict"]:
         df = pd.DataFrame(results)
         valid = df[(df['Phase'] < 30) & (df['Elongation'] > 90)].copy()
 
-        # 視覺化摘要數據 (減少頁面空白)
+        # 頂部摘要卡片
         m1, m2, m3 = st.columns(3)
-        m1.metric("Target", target_id)
-        m2.metric("Windows Found", len(valid['Date'].diff().dt.days > 10) if not valid.empty else 0)
-        m3.metric("Analysis Span", f"{span} Yrs")
+        m1.metric(l["metric_target"], target_id)
+        m2.metric(l["metric_windows"], len(valid['Date'].diff().dt.days > 10) if not valid.empty else 0)
+        m3.metric(l["metric_span"], f"{span}")
 
         if not valid.empty:
             st.markdown(f"#### {l['result_title']}")
@@ -145,21 +152,23 @@ if page == l["nav_predict"]:
             res_cols = st.columns(3)
             for idx, (_, gp) in enumerate(valid.groupby('group')):
                 with res_cols[idx % 3]:
-                    st.success(f"**{gp['Date'].iloc[0].strftime('%Y-%m-%d')}** \n\n **{gp['Date'].iloc[-1].strftime('%Y-%m-%d')}**")
+                    # 使用「至」或「to」連接
+                    st.success(f"{gp['Date'].iloc[0].strftime('%Y-%m-%d')} **{l['date_to']}** {gp['Date'].iloc[-1].strftime('%Y-%m-%d')}")
             
             st.divider()
             st.subheader(l["chart_title"])
-            fig, ax = plt.subplots(figsize=(12, 4), facecolor='#f8f9fa')
+            fig, ax = plt.subplots(figsize=(12, 4.5), facecolor='#f8f9fa')
             ax.set_facecolor('#ffffff')
-            ax.plot(df['Date'], df['Phase'], label="α (Phase)", color='#E67E22', linewidth=2)
-            ax.plot(df['Date'], df['Elongation'], label="θ (Elongation)", color='#2E86C1', linewidth=2)
-            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), color='#2ECC71', alpha=0.2, label="Optimal")
+            ax.plot(df['Date'], df['Phase'], label=l["legend_phase"], color='#E67E22', linewidth=2)
+            ax.plot(df['Date'], df['Elongation'], label=l["legend_elong"], color='#2E86C1', linewidth=2)
+            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), 
+                            color='#2ECC71', alpha=0.2, label=l["legend_opt"])
             ax.set_ylim(0, 180)
             ax.grid(True, linestyle='--', alpha=0.4)
             ax.legend(loc='upper right', frameon=True)
             st.pyplot(fig)
         else:
-            st.warning("No windows meet the α < 30° & θ > 90° criteria in this period.")
+            st.warning("No valid windows found within the specified scientific constraints.")
 
 elif page == l["nav_background"]:
     st.subheader(l["why_title"])
@@ -167,23 +176,23 @@ elif page == l["nav_background"]:
     st.divider()
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown(f"#### {l['func_title'] if 'func_title' in l else 'Functions'}")
-        st.write("1. Orbital dynamics analysis.\n2. Automatic window filtering.\n3. Multi-target data tracking.")
+        st.markdown(f"#### {l['nav_predict']}")
+        st.write(f"1. {l['legend_phase']} < 30°\n2. {l['legend_elong']} > 90°")
     with c2:
-        st.markdown("#### Scientific Constraints")
-        st.latex(r"\alpha < 30^\circ")
-        st.latex(r"\theta > 90^\circ")
+        st.markdown(f"#### {l['nav_val']}")
+        st.write("Validated by ALCDEF & JPL SBDB.")
 
 elif page == l["nav_val"]:
     st.subheader(l["val_title"])
+    # 這裡的表格內容已完全透過字典翻譯
     val_df = pd.DataFrame({
-        l["val_col_param"]: ["Phase Angle (α)", "Window Accuracy", "Reference DB"],
-        l["val_col_error"]: ["± 0.42°", "± 2.5 Days", "Validated"],
-        l["val_col_source"]: ["JPL SBDB", "ALCDEF", "Chapter 5"]
+        l["val_col_param"]: [l["val_row_phase"], l["val_row_window"], l["val_row_data"]],
+        l["val_col_error"]: ["± 0.42°", "± 2.5 Days", "JPL SBDB"],
+        l["val_col_source"]: ["ALCDEF", "Chapter 5", "Validated"]
     })
     st.table(val_df)
 
-# 頁腳
+# 全域頁腳
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.divider()
-st.markdown(f"<p style='text-align: center; color: #999;'>{l['copy']}</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #999; font-size: 0.9em;'>{l['copy']}</p>", unsafe_allow_html=True)
