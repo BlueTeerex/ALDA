@@ -188,7 +188,7 @@ elif page == l["nav_val"]:
     val_df = pd.DataFrame({
         l["val_col_param"]: [l["val_row_phase"], l["val_row_window"], l["val_row_data"]],
         l["val_col_error"]: ["± 0.42°", "± 2.5 Days", "JPL SBDB"],
-        l["val_col_source"]: ["ALCDEF", "Chapter 5", "Validated"]
+        l["val_col_source"]: ["ALCDEF", "論文第五章 Chapter 5", "Validated"]
     })
     st.table(val_df)
 
