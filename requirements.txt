@@ -1,7 +1,7 @@
 streamlit
-ephem
-astropy
 numpy
-matplotlib
+ephem
 pandas
-astroquery
+astropy
+matplotlib
+pytz
