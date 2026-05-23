@@ -76,7 +76,7 @@ LANG_DICT = {
         "last_update": "系统最后更新时间", "tz_name": "北京/澳门时间 (UTC+8)", "val_info": "数据已与 NASA JPL Horizons 及 ALCDEF 交叉验证。"
     },
     "en": {
-        "full_name": "Asteroid Lightcurve Data Augmentor", "nav_label": "Navigation", "nav_predict": "Window Prediction",
+        "full_name": "Asteroid Lightcurve Data Augmenter", "nav_label": "Navigation", "nav_predict": "Window Prediction",
         "nav_background": "Background", "nav_val": "Validation", "why_title": "Motivation & Objective",
         "why_text": "Asteroid physical modeling relies heavily on lightcurve data. ALDA predicts optimal observation windows to fill scientific gaps at critical geometric phases.",
         "val_title": "Error Analysis", "val_col_param": "Parameter", "val_col_error": "Mean Error", "val_col_source": "Source / Verification",
