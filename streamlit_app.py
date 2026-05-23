@@ -25,7 +25,7 @@ class ALDAEngine:
         elongation = degrees(acos(max(-1, min(1, cos_theta))))
         return {'Date': date, 'Phase': phase_angle, 'Elongation': elongation}
 
-# --- 2. 擴充軌道數據庫 (新增多個經典小行星) ---
+# --- 2. 擴充軌道數據庫 ---
 PAPER_ASTEROIDS = {
     "162173 Ryugu": "162173 Ryugu,e,5.86663,251.29446,211.61035,1.1910091,0,0.19111632,327.3279370,5/31.0/2020,2000,H19.55,0.15",
     "101955 Bennu": "101955 Bennu,e,6.03494,2.06087,66.22307,1.1259673,0,0.20374511,101.7039655,5/31.0/2020,2000,H20.45,0.15",
@@ -39,7 +39,7 @@ PAPER_ASTEROIDS = {
     "65803 Didymos": "65803 Didymos,e,3.408,164.63,319.32,1.644,0,0.384,204.44,5/31/2020,2000,H18.1,0.15"
 }
 
-# --- 3. 三語專業字典 (中英文完美統一翻譯) ---
+# --- 3. 三語專業字典 ---
 LANG_MAP = {"繁體中文": "zh_TW", "简体中文": "zh_CN", "English": "en"}
 LANG_DICT = {
     "zh_TW": {
@@ -60,7 +60,7 @@ LANG_DICT = {
         "full_name": "小行星光变数据扩增系统", "nav_label": "导航菜单", "nav_predict": "观测视窗预测",
         "nav_background": "开发背景", "nav_val": "模型准确性验证", "why_title": "研究背景与目的",
         "why_text": "小行星形状重构与物理性质研究高度依赖光变曲线数据。多数小行星在特定几何相位区间缺乏连续观测记录。本系统旨在精确预测观测视窗，协助科研人员填补数据缺口。",
-        "val_title": "预测误差 analysis", "val_col_param": "评估参数", "val_col_error": "平均误差", "val_col_source": "数据验证来源",
+        "val_title": "预测误差分析", "val_col_param": "评估参数", "val_col_error": "平均误差", "val_col_source": "数据验证来源",
         "val_row_phase": "相位角 (α)", "val_row_window": "观测视窗日期", "val_row_data": "验证数据库",
         "val_res_phase": "± 0.42°", "val_res_window": "± 2.5 天", "val_res_source1": "ALCDEF 数据库", "val_res_source2": "论文第五章", "val_res_source3": "已通过验证",
         "settings": "观测参数设定", "target": "选取目标小行星", "start_year": "预测起始年份", "years": "预测跨度 (年)",
@@ -86,15 +86,22 @@ LANG_DICT = {
     }
 }
 
-# --- 4. 網頁 UI 設定與 CSS ---
+# --- 4. 網頁 UI 設定與 CSS (已修復深色模式支援) ---
 st.set_page_config(page_title="ALDA Scientific", layout="wide")
 
 st.markdown("""
     <style>
-    .main { background-color: #f8f9fa; }
+    /* 改用 Streamlit 原生變數 (var) 讓深淺模式自動適配 */
     .stButton>button { width: 100%; border-radius: 8px; background-color: #1f77b4; color: white; border: none; font-weight: bold; }
-    div[data-testid="stExpander"] { border: 1px solid #e6e6e6; border-radius: 12px; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .stMetric { background-color: white; padding: 15px; border-radius: 10px; border: 1px solid #eee; }
+    div[data-testid="stExpander"] { border: 1px solid var(--secondary-background-color); border-radius: 12px; background-color: var(--background-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    
+    /* 修復白底白字問題：利用 secondary-background-color 自動轉換深淺背景 */
+    div[data-testid="stMetric"] { 
+        background-color: var(--secondary-background-color); 
+        padding: 15px; 
+        border-radius: 10px; 
+        border: 1px solid var(--secondary-background-color); 
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -118,9 +125,9 @@ with st.sidebar:
     formatted_time = datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')
     st.caption(f"**{l['last_update']}**:\n{formatted_time}\n*{l['tz_name']}*")
 
-# 主標題渲染
+# 主標題渲染 (修復了文字顏色，改用系統預設適應性色彩)
 st.title("ALDA")
-st.markdown(f"<h3 style='color: #444; margin-top: -15px;'>{l['full_name']}</h3>", unsafe_allow_html=True)
+st.markdown(f"<h3 style='color: var(--text-color); margin-top: -15px;'>{l['full_name']}</h3>", unsafe_allow_html=True)
 st.divider()
 
 # --- 5. 分頁邏輯 ---
@@ -130,7 +137,7 @@ if page == l["nav_predict"]:
         col_t, col_y, col_s = st.columns([2, 1, 1])
         target_id = col_t.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
         
-        # 動態將預設起始年份設為今年 (2026)
+        # 動態將預設起始年份設為今年
         current_year = datetime.now().year
         s_year = col_y.number_input(l["start_year"], value=current_year)
         
@@ -164,16 +171,29 @@ if page == l["nav_predict"]:
             
             st.divider()
             st.subheader(l["chart_title"])
-            fig, ax = plt.subplots(figsize=(12, 4.5), facecolor='#f8f9fa')
-            ax.set_facecolor('#ffffff')
+            
+            # 將圖表背景設為透明，完美融入深色/淺色模式
+            fig, ax = plt.subplots(figsize=(12, 4.5))
+            fig.patch.set_alpha(0.0) 
+            ax.set_facecolor('none')
+            
             ax.plot(df['Date'], df['Phase'], label=l["legend_phase"], color='#E67E22', linewidth=2)
             ax.plot(df['Date'], df['Elongation'], label=l["legend_elong"], color='#2E86C1', linewidth=2)
             ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), 
                             color='#2ECC71', alpha=0.2, label=l["legend_opt"])
             ax.set_ylim(0, 180)
-            ax.set_ylabel(l["y_label"])
+            ax.set_ylabel(l["y_label"], color='gray')
+            ax.tick_params(colors='gray')
             ax.grid(True, linestyle='--', alpha=0.4)
-            ax.legend(loc='upper right', frameon=True)
+            
+            # 調整圖例文字顏色
+            legend = ax.legend(loc='upper right', frameon=True)
+            for text in legend.get_texts():
+                text.set_color('gray')
+            
+            for spine in ax.spines.values():
+                spine.set_edgecolor('gray')
+                
             st.pyplot(fig)
         else:
             st.warning("No valid windows found within the specified scientific constraints.")
@@ -202,4 +222,4 @@ elif page == l["nav_val"]:
 # 全域頁腳
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.divider()
-st.markdown(f"<p style='text-align: center; color: #999; font-size: 0.9em;'>{l['copy']}</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: gray; font-size: 0.9em;'>{l['copy']}</p>", unsafe_allow_html=True)
