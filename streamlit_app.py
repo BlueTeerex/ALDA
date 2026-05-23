@@ -3,10 +3,10 @@ import numpy as np
 import ephem
 import pandas as pd
 from astropy.time import Time
-import matplotlib.pyplot as plt
 from math import acos, degrees
 from datetime import datetime
 import pytz
+import plotly.graph_objects as go # 升級為互動式圖表引擎
 
 # --- 1. 高精度科研計算引擎 ---
 class ALDAEngine:
@@ -25,18 +25,22 @@ class ALDAEngine:
         elongation = degrees(acos(max(-1, min(1, cos_theta))))
         return {'Date': date, 'Phase': phase_angle, 'Elongation': elongation}
 
-# --- 2. 擴充軌道數據庫 ---
+# --- 2. 擴充軌道數據庫 (新增更多經典與近地小行星) ---
 PAPER_ASTEROIDS = {
-    "162173 Ryugu": "162173 Ryugu,e,5.86663,251.29446,211.61035,1.1910091,0,0.19111632,327.3279370,5/31.0/2020,2000,H19.55,0.15",
-    "101955 Bennu": "101955 Bennu,e,6.03494,2.06087,66.22307,1.1259673,0,0.20374511,101.7039655,5/31.0/2020,2000,H20.45,0.15",
-    "25143 Itokawa": "25143 Itokawa,e,1.62154,162.81303,69.08304,1.3241094,0,0.2801456,1.4883134,5/31.0/2020,2000,H19.2,0.15",
-    "99942 Apophis": "99942 Apophis,e,3.331,126.395,204.446,0.9224,0,0.1912,250.042,5/31.0/2020,2000,H19.7,0.15",
-    "433 Eros": "433 Eros,e,10.827,178.783,304.402,1.4582,0,0.2227,178.817,5/31.0/2020,2000,H11.16,0.15",
-    "1 Ceres": "1 Ceres,f,10.59,80.31,72.52,2.767,0.076,0.214,102.83,5/31/2020,2000,H3.3,0.15",
-    "2 Pallas": "2 Pallas,f,34.84,173.07,310.20,2.772,0.231,0.213,24.12,5/31/2020,2000,H4.1,0.15",
-    "4 Vesta": "4 Vesta,f,7.14,103.85,149.75,2.361,0.089,0.272,254.12,5/31/2020,2000,H3.2,0.15",
-    "16 Psyche": "16 Psyche,f,3.09,150.31,121.33,2.924,0.134,0.191,228.46,5/31/2020,2000,H5.9,0.15",
-    "65803 Didymos": "65803 Didymos,e,3.408,164.63,319.32,1.644,0,0.384,204.44,5/31/2020,2000,H18.1,0.15"
+    "1 Ceres (穀神星)": "1 Ceres,f,10.59,80.31,72.52,2.767,0.076,0.214,102.83,5/31/2020,2000,H3.3,0.15",
+    "2 Pallas (智神星)": "2 Pallas,f,34.84,173.07,310.20,2.772,0.231,0.213,24.12,5/31/2020,2000,H4.1,0.15",
+    "3 Juno (婚神星)": "3 Juno,f,12.98,169.91,248.13,2.671,0.255,0.226,35.48,5/31/2020,2000,H5.33,0.15",
+    "4 Vesta (灶神星)": "4 Vesta,f,7.14,103.85,149.75,2.361,0.089,0.272,254.12,5/31/2020,2000,H3.2,0.15",
+    "10 Hygiea (健神星)": "10 Hygiea,f,3.84,283.43,312.98,3.137,0.116,0.176,170.83,5/31/2020,2000,H5.43,0.15",
+    "16 Psyche (靈神星)": "16 Psyche,f,3.09,150.31,121.33,2.924,0.134,0.191,228.46,5/31/2020,2000,H5.9,0.15",
+    "433 Eros (愛神星)": "433 Eros,e,10.827,178.783,304.402,1.4582,0,0.2227,178.817,5/31.0/2020,2000,H11.16,0.15",
+    "3200 Phaethon (法厄同)": "3200 Phaethon,e,22.258,265.234,318.156,1.2711,0,0.8899,203.491,5/31/2020,2000,H14.6,0.15",
+    "4179 Toutatis (圖塔蒂斯)": "4179 Toutatis,e,0.446,122.56,274.82,2.531,0,0.629,328.71,5/31/2020,2000,H15.30,0.15",
+    "25143 Itokawa (糸川)": "25143 Itokawa,e,1.62154,162.81303,69.08304,1.3241094,0,0.2801456,1.4883134,5/31.0/2020,2000,H19.2,0.15",
+    "65803 Didymos (雙小行星)": "65803 Didymos,e,3.408,164.63,319.32,1.644,0,0.384,204.44,5/31/2020,2000,H18.1,0.15",
+    "99942 Apophis (毀神星)": "99942 Apophis,e,3.331,126.395,204.446,0.9224,0,0.1912,250.042,5/31.0/2020,2000,H19.7,0.15",
+    "101955 Bennu (貝努)": "101955 Bennu,e,6.03494,2.06087,66.22307,1.1259673,0,0.20374511,101.7039655,5/31.0/2020,2000,H20.45,0.15",
+    "162173 Ryugu (龍宮)": "162173 Ryugu,e,5.86663,251.29446,211.61035,1.1910091,0,0.19111632,327.3279370,5/31.0/2020,2000,H19.55,0.15"
 }
 
 # --- 3. 三語專業字典 ---
@@ -86,22 +90,23 @@ LANG_DICT = {
     }
 }
 
-# --- 4. 網頁 UI 設定與 CSS (已修復深色模式支援) ---
-st.set_page_config(page_title="ALDA Scientific", layout="wide")
+# --- 4. 效能優化快取機制 ---
+@st.cache_data(show_spinner=False)
+def calculate_trajectory(target_id, s_year, span):
+    engine = ALDAEngine(PAPER_ASTEROIDS[target_id])
+    jd_start = Time(f"{s_year}-01-01").jd
+    jd_array = np.arange(jd_start, jd_start + (span * 365), 2)
+    results = [engine.get_metrics(jd) for jd in jd_array]
+    return pd.DataFrame(results)
+
+# --- 5. 網頁 UI 設定與 CSS ---
+st.set_page_config(page_title="ALDA Scientific", layout="wide", page_icon="☄️")
 
 st.markdown("""
     <style>
-    /* 改用 Streamlit 原生變數 (var) 讓深淺模式自動適配 */
-    .stButton>button { width: 100%; border-radius: 8px; background-color: #1f77b4; color: white; border: none; font-weight: bold; }
+    .stButton>button { width: 100%; border-radius: 8px; background-color: #1f77b4; color: white; border: none; font-weight: bold; padding: 0.5rem 1rem;}
     div[data-testid="stExpander"] { border: 1px solid var(--secondary-background-color); border-radius: 12px; background-color: var(--background-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    
-    /* 修復白底白字問題：利用 secondary-background-color 自動轉換深淺背景 */
-    div[data-testid="stMetric"] { 
-        background-color: var(--secondary-background-color); 
-        padding: 15px; 
-        border-radius: 10px; 
-        border: 1px solid var(--secondary-background-color); 
-    }
+    div[data-testid="stMetric"] { background-color: var(--secondary-background-color); padding: 15px; border-radius: 10px; border: 1px solid var(--secondary-background-color); }
     </style>
     """, unsafe_allow_html=True)
 
@@ -119,44 +124,37 @@ with st.sidebar:
     st.caption(f"{l['inst_label']}:")
     st.write(f"**{l['school']}**")
     
-    # 智慧時區時間戳功能
     st.divider()
     local_tz = pytz.timezone('Asia/Macau')
     formatted_time = datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')
     st.caption(f"**{l['last_update']}**:\n{formatted_time}\n*{l['tz_name']}*")
 
-# 主標題渲染 (修復了文字顏色，改用系統預設適應性色彩)
+# 主標題渲染
 st.title("ALDA")
 st.markdown(f"<h3 style='color: var(--text-color); margin-top: -15px;'>{l['full_name']}</h3>", unsafe_allow_html=True)
 st.divider()
 
-# --- 5. 分頁邏輯 ---
+# --- 6. 分頁邏輯 ---
 if page == l["nav_predict"]:
     with st.container():
         st.subheader(l["settings"])
         col_t, col_y, col_s = st.columns([2, 1, 1])
         target_id = col_t.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
-        
-        # 動態將預設起始年份設為今年
         current_year = datetime.now().year
-        s_year = col_y.number_input(l["start_year"], value=current_year)
-        
+        s_year = col_y.number_input(l["start_year"], value=current_year, min_value=1900, max_value=2100)
         span = col_s.slider(l["years"], 1, 25, 15)
         btn_run = st.button(l["run_btn"], type="primary")
 
     if btn_run:
-        engine = ALDAEngine(PAPER_ASTEROIDS[target_id])
-        jd_start = Time(f"{s_year}-01-01").jd
-        jd_array = np.arange(jd_start, jd_start + (span * 365), 2)
-        results = [engine.get_metrics(jd) for jd in jd_array]
-        df = pd.DataFrame(results)
-        valid = df[(df['Phase'] < 30) & (df['Elongation'] > 90)].copy()
+        with st.spinner('Calculating orbital geometry...'):
+            df = calculate_trajectory(target_id, s_year, span)
+            valid = df[(df['Phase'] < 30) & (df['Elongation'] > 90)].copy()
 
         # 頂部摘要卡片
         m1, m2, m3 = st.columns(3)
-        m1.metric(l["metric_target"], target_id)
+        m1.metric(l["metric_target"], target_id.split(" ")[0]) # 只顯示編號與英文，保持UI整潔
         m2.metric(l["metric_windows"], len(valid['Date'].diff().dt.days > 10) if not valid.empty else 0)
-        m3.metric(l["metric_span"], f"{span}")
+        m3.metric(l["metric_span"], f"{span} Yrs")
 
         if not valid.empty:
             st.markdown(f"#### {l['result_title']}")
@@ -164,7 +162,6 @@ if page == l["nav_predict"]:
             res_cols = st.columns(3)
             for idx, (_, gp) in enumerate(valid.groupby('group')):
                 with res_cols[idx % 3]:
-                    # 嚴格執行 YYYY-MM-DD 的標準日期格式輸出
                     start_formatted = gp['Date'].iloc[0].strftime('%Y-%m-%d')
                     end_formatted = gp['Date'].iloc[-1].strftime('%Y-%m-%d')
                     st.success(f"{start_formatted} **{l['date_to']}** {end_formatted}")
@@ -172,29 +169,36 @@ if page == l["nav_predict"]:
             st.divider()
             st.subheader(l["chart_title"])
             
-            # 將圖表背景設為透明，完美融入深色/淺色模式
-            fig, ax = plt.subplots(figsize=(12, 4.5))
-            fig.patch.set_alpha(0.0) 
-            ax.set_facecolor('none')
+            # --- 採用 Plotly 建立現代化互動圖表 ---
+            fig = go.Figure()
             
-            ax.plot(df['Date'], df['Phase'], label=l["legend_phase"], color='#E67E22', linewidth=2)
-            ax.plot(df['Date'], df['Elongation'], label=l["legend_elong"], color='#2E86C1', linewidth=2)
-            ax.fill_between(df['Date'], 0, 180, where=(df['Phase']<30)&(df['Elongation']>90), 
-                            color='#2ECC71', alpha=0.2, label=l["legend_opt"])
-            ax.set_ylim(0, 180)
-            ax.set_ylabel(l["y_label"], color='gray')
-            ax.tick_params(colors='gray')
-            ax.grid(True, linestyle='--', alpha=0.4)
+            # 畫線
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['Phase'], mode='lines', name=l["legend_phase"], line=dict(color='#E67E22', width=2)))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['Elongation'], mode='lines', name=l["legend_elong"], line=dict(color='#2E86C1', width=2)))
             
-            # 調整圖例文字顏色
-            legend = ax.legend(loc='upper right', frameon=True)
-            for text in legend.get_texts():
-                text.set_color('gray')
+            # 加上綠色觀測視窗底色標示 (完美支援中文)
+            added_legend = False
+            for _, gp in valid.groupby('group'):
+                fig.add_vrect(
+                    x0=gp['Date'].iloc[0], x1=gp['Date'].iloc[-1],
+                    fillcolor="#2ECC71", opacity=0.25, line_width=0,
+                    name=l["legend_opt"], showlegend=not added_legend
+                )
+                added_legend = True
+
+            fig.update_layout(
+                yaxis_title=l["y_label"],
+                yaxis=dict(range=[0, 180]),
+                hovermode="x unified",
+                plot_bgcolor='rgba(0,0,0,0)', # 透明背景適配深色模式
+                paper_bgcolor='rgba(0,0,0,0)',
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                margin=dict(l=0, r=0, t=30, b=0)
+            )
+            fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)')
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)')
             
-            for spine in ax.spines.values():
-                spine.set_edgecolor('gray')
-                
-            st.pyplot(fig)
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.warning("No valid windows found within the specified scientific constraints.")
 
