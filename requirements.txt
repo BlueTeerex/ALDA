@@ -3,5 +3,5 @@ numpy
 ephem
 pandas
 astropy
-matplotlib
+plotly
 pytz
