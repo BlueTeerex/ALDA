@@ -6,7 +6,7 @@ from astropy.time import Time
 from math import acos, degrees
 from datetime import datetime
 import pytz
-import plotly.graph_objects as go # 升級為互動式圖表引擎
+import plotly.graph_objects as go
 
 # --- 1. 高精度科研計算引擎 ---
 class ALDAEngine:
@@ -25,8 +25,7 @@ class ALDAEngine:
         elongation = degrees(acos(max(-1, min(1, cos_theta))))
         return {'Date': date, 'Phase': phase_angle, 'Elongation': elongation}
 
-# --- 2. 擴充軌道數據庫 (新增更多經典與近地小行星) ---
-# --- 2. 擴充軌道數據庫 (已修復 XEphem 解析格式 Bug) ---
+# --- 2. 擴充軌道數據庫 ---
 PAPER_ASTEROIDS = {
     "1 Ceres (穀神星)": "1 Ceres,e,10.59,80.31,72.52,2.767,0,0.076,102.83,5/31/2020,2000,H3.3,0.15",
     "2 Pallas (智神星)": "2 Pallas,e,34.84,173.07,310.20,2.772,0,0.231,24.12,5/31/2020,2000,H4.1,0.15",
@@ -142,8 +141,11 @@ if page == l["nav_predict"]:
         col_t, col_y, col_s = st.columns([2, 1, 1])
         target_id = col_t.selectbox(l["target"], list(PAPER_ASTEROIDS.keys()))
         current_year = datetime.now().year
-        s_year = col_y.number_input(l["start_year"], value=current_year, min_value=1900, max_value=2100)
-        span = col_s.slider(l["years"], 1, 25, 15)
+        
+        # 移除年份與跨度的上限限制 (改用 number_input)
+        s_year = col_y.number_input(l["start_year"], value=current_year)
+        span = col_s.number_input(l["years"], min_value=1, value=15)
+        
         btn_run = st.button(l["run_btn"], type="primary")
 
     if btn_run:
@@ -153,7 +155,7 @@ if page == l["nav_predict"]:
 
         # 頂部摘要卡片
         m1, m2, m3 = st.columns(3)
-        m1.metric(l["metric_target"], target_id.split(" ")[0]) # 只顯示編號與英文，保持UI整潔
+        m1.metric(l["metric_target"], target_id.split(" ")[0]) 
         m2.metric(l["metric_windows"], len(valid['Date'].diff().dt.days > 10) if not valid.empty else 0)
         m3.metric(l["metric_span"], f"{span} Yrs")
 
@@ -170,14 +172,12 @@ if page == l["nav_predict"]:
             st.divider()
             st.subheader(l["chart_title"])
             
-            # --- 採用 Plotly 建立現代化互動圖表 ---
+            # 互動圖表
             fig = go.Figure()
             
-            # 畫線
             fig.add_trace(go.Scatter(x=df['Date'], y=df['Phase'], mode='lines', name=l["legend_phase"], line=dict(color='#E67E22', width=2)))
             fig.add_trace(go.Scatter(x=df['Date'], y=df['Elongation'], mode='lines', name=l["legend_elong"], line=dict(color='#2E86C1', width=2)))
             
-            # 加上綠色觀測視窗底色標示 (完美支援中文)
             added_legend = False
             for _, gp in valid.groupby('group'):
                 fig.add_vrect(
@@ -191,7 +191,7 @@ if page == l["nav_predict"]:
                 yaxis_title=l["y_label"],
                 yaxis=dict(range=[0, 180]),
                 hovermode="x unified",
-                plot_bgcolor='rgba(0,0,0,0)', # 透明背景適配深色模式
+                plot_bgcolor='rgba(0,0,0,0)', 
                 paper_bgcolor='rgba(0,0,0,0)',
                 legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
                 margin=dict(l=0, r=0, t=30, b=0)
